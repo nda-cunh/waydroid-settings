@@ -2,63 +2,38 @@ namespace Wds{
 
 public class Settings : Gtk.Box{
 	public Settings(){
-		Object(orientation: Gtk.Orientation.VERTICAL, hexpand:true);
+		Object(orientation: Gtk.Orientation.VERTICAL);
 		this.init();
-		this.append(text_gen);
-		this.append(_box_general);
+		this.append(_group);
 
 		// General Part
-	
-		_block_winmode = Block.append_blocks(_box_general, "Enabled window mode");
-		_block_winmode.connect((boolean)=>{
-			print(@"win $boolean\n");
-			//TODO
-		});
-		_block_suspend = Block.append_blocks(_box_general, "Suspend the containr on inactivity");
-		_block_suspend.connect((boolean)=>{
-			print(@"suspend $boolean\n");
-			//TODO
-		});
-		_block_invert = Block.append_blocks(_box_general, "Invert colors");
-		_block_invert.connect((boolean)=>{
-			print(@"invert $boolean\n");
-			//TODO
-		});
+		_block_winmode = Block.append_blocks(_group, "Enabled window mode");
+		_block_suspend = Block.append_blocks(_group, "Suspend the containr on inactivity");
+		_block_invert = Block.append_blocks(_group, "Invert colors");
 		
 		// Window Part
-		// this.append(text_win);
 		this.append(_window_block);
-
 	}
 	private void init(){
-		text_gen = new Gtk.Label("<big><b>General</b></big>"){halign=Gtk.Align.START, css_classes={"title"}, use_markup=true};
-		text_win = new Gtk.Label("<big><b>Window</b></big>"){halign=Gtk.Align.START, css_classes={"title"}, use_markup=true};
-		_box_general = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		_group = new Adw.PreferencesGroup(){title="General", margin_top=10, margin_bottom=10, margin_start=10, margin_end=10};
 		_window_block = new WindowBlock();
-		_box_general.add_css_class("adwclamp");
 	}
-	private Gtk.Label		text_gen;
-	private Gtk.Label		text_win;
-	private Gtk.Box			_box_general;
-	private Block 			_block_winmode;
-	private Block 			_block_suspend;
-	private Block 			_block_invert;
-	private WindowBlock 	_window_block;
+	private Adw.PreferencesGroup	_group;
+	private Block 					_block_winmode;
+	private Block 					_block_suspend;
+	private Block 					_block_invert;
+	private WindowBlock 			_window_block;
 }
 
 // --------------------------- //
 //		PART GENERAL :
 // --------------------------- //
 
-class Block : Gtk.Box{
+class Block : Adw.ActionRow{
 	public Block(string text){
-		Object(orientation : Gtk.Orientation.HORIZONTAL, hexpand: true, margin_top:5, margin_bottom:5, margin_start:5, margin_end:5);
-		_label = new Gtk.Label(text);
-		_switch = new Gtk.Switch(){
-			halign = Gtk.Align.END, hexpand=true
-		};
-		base.append(_label);
-		base.append(_switch);
+		Object(title:text);
+		_switch = new Gtk.Switch(){valign=Gtk.Align.CENTER};
+		base.add_suffix(_switch);
 		this.event();
 	}
 	private void event(){
@@ -68,11 +43,9 @@ class Block : Gtk.Box{
 				return false;
 		});
 	}
-	public static Block append_blocks(Gtk.Box box, string text){
+	public static Block append_blocks(Adw.PreferencesGroup box, string text){
 		var tmp = new Block(text);
-		// box.append(new Gtk.Separator(Gtk.Orientation.VERTICAL));
-		box.append(tmp);
-		// box.append(new Gtk.Separator(Gtk.Orientation.VERTICAL));
+		box.add(tmp);
 		return (owned)tmp;
 	}
 	public new void connect(Handler f){
@@ -81,7 +54,6 @@ class Block : Gtk.Box{
 
     public delegate void Handler (bool stat);
 	private Handler	_func;
-	private Gtk.Label	_label;
 	private Gtk.Switch	_switch;
 }
 }
@@ -93,18 +65,18 @@ class Block : Gtk.Box{
 class WindowBlock : Adw.PreferencesGroup{
 	public WindowBlock(){
 		Object(title:"Window", margin_top:10, margin_bottom:10, margin_start:10, margin_end:10);
-		_width = new Gtk.SpinButton.with_range(10, 4000, 10);
-		_height = new Gtk.SpinButton.with_range(10, 4000, 10);
-		_widthpadd = new Gtk.SpinButton.with_range(10, 4000, 10);
-		_heightpadd = new Gtk.SpinButton.with_range(10, 4000, 10);
+		_width = new Gtk.SpinButton.with_range(10, 4000, 10){valign=Gtk.Align.CENTER};
+		_height = new Gtk.SpinButton.with_range(10, 4000, 10){valign=Gtk.Align.CENTER};
+		_widthpadd = new Gtk.SpinButton.with_range(10, 4000, 10){valign=Gtk.Align.CENTER};
+		_heightpadd = new Gtk.SpinButton.with_range(10, 4000, 10){valign=Gtk.Align.CENTER};
 		
-		var row1 = new Adw.ActionRow(){title="Width:"};
+		var row1 = new Adw.ActionRow(){title="Width"};
 		row1.add_suffix(_width);
-		var row2 = new Adw.ActionRow(){title="Height:"};
+		var row2 = new Adw.ActionRow(){title="Height"};
 		row2.add_suffix(_height);
-		var row3 = new Adw.ActionRow(){title="Height Padding:"};
+		var row3 = new Adw.ActionRow(){title="Height", subtitle="(padding)"};
 		row3.add_suffix(_widthpadd);
-		var row4 = new Adw.ActionRow(){title="Width Padding:"};
+		var row4 = new Adw.ActionRow(){title="Width", subtitle="(padding)"};
 		row4.add_suffix(_heightpadd);
 		
 		base.add(row1);

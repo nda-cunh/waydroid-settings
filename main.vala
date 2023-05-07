@@ -1,7 +1,7 @@
 
 public class Main{
 	public Main(){
-		_app = new Gtk.Application ("com.cosmos.waydroid", 0);
+		_app = new Adw.Application ("com.cosmos.waydroid", 0);
 		_app.activate.connect(activate);
 	}
 	private void activate(){
@@ -25,19 +25,4 @@ public class Main{
 	private Gtk.Application _app;
 }
 
-const string css_data = """
-headerbar label{
-	font-weight: 700;
-	font-size=12px;
-}
-
-.adwclamp{
-	#background-color:white;
-	margin:10px;
-  box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
-	border-radius:15px;
-.adwclamp spinbutton{
-	border-radius:10px;
-}
-}
-""";
+const string css_data = "";

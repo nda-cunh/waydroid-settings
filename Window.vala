@@ -18,6 +18,7 @@ class Window : Adw.ApplicationWindow{
                 _viewSwitcherBar.set_reveal (toolsViewTitle.get_title_visible ());
             });
 		_headerBar.set_title_widget (toolsViewTitle);
+		_headerBar.set_centering_policy (Adw.CenteringPolicy.STRICT);
 	}
 
 	private void init(){
