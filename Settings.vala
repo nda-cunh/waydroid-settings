@@ -3,13 +3,15 @@ namespace Wds{
 public class Settings : Gtk.Box{
 	public Settings(){
 		Object(orientation: Gtk.Orientation.VERTICAL, hexpand:true);
-		
-		var text_gen = new Gtk.Label("<big><b>General</b></big>"){halign=Gtk.Align.START, use_markup=true, margin_bottom=5, margin_start=5, margin_top=5};
-		var text_win = new Gtk.Label("<big><b>Window</b></big>"){halign=Gtk.Align.START, use_markup=true, margin_bottom=5, margin_start=5, margin_top=5};
+		this.init();
+		this.append(text_gen);
+		this.append(_clamp);
+		this.append(text_win);
+
+
+
 
 		// General Part
-		this.append(text_gen);
-		this.append(new Gtk.Separator(Gtk.Orientation.VERTICAL));
 		
 		_block_winmode = Block.append_blocks(this, "Enabled window mode");
 		_block_winmode.connect((boolean)=>{
@@ -26,15 +28,22 @@ public class Settings : Gtk.Box{
 			print(@"invert $boolean\n");
 			//TODO
 		});
-		this.append(new Gtk.Separator(Gtk.Orientation.VERTICAL));
 		
 		// Window Part
-		this.append(text_win);
-		this.append(new Gtk.Separator(Gtk.Orientation.VERTICAL));
 	}
-	private Block _block_winmode;
-	private Block _block_suspend;
-	private Block _block_invert;
+	private void init(){
+		text_gen = new Gtk.Label("<big><b>General</b></big>"){halign=Gtk.Align.START, use_markup=true, margin_bottom=5, margin_start=5, margin_top=5};
+		text_win = new Gtk.Label("<big><b>Window</b></big>"){halign=Gtk.Align.START, use_markup=true, margin_bottom=5, margin_start=5, margin_top=5};
+		_box_general = new Gtk.Box(Gtk.Orientation.HORIZONTAL, 0);
+		_clamp = new Adw.Clamp(){child=_box_general, margin_top=5, margin_start=5, margin_end=5, margin_bottom=5, tightening_threshold=8, maximum_size=8};
+	}
+	private Gtk.Label	text_gen;
+	private Gtk.Label	text_win;
+	private Gtk.Box		_box_general;
+	private Adw.Clamp	_clamp;
+	private Block 		_block_winmode;
+	private Block 		_block_suspend;
+	private Block 		_block_invert;
 }
 
 
@@ -58,9 +67,9 @@ class Block : Gtk.Box{
 	}
 	public static Block append_blocks(Gtk.Box box, string text){
 		var tmp = new Block(text);
-		box.append(new Gtk.Separator(Gtk.Orientation.VERTICAL));
+		// box.append(new Gtk.Separator(Gtk.Orientation.VERTICAL));
 		box.append(tmp);
-		box.append(new Gtk.Separator(Gtk.Orientation.VERTICAL));
+		// box.append(new Gtk.Separator(Gtk.Orientation.VERTICAL));
 		return (owned)tmp;
 	}
 	public void connect(Handler f){
