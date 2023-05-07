@@ -9,6 +9,7 @@ executable('waydroid-settings',
            'main.vala',
            'Window.vala',
            'Settings.vala',
+           'Script.vala',
            dependencies : [
               dependency('gtk4'),
               dependency('libadwaita-1')],

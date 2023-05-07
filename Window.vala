@@ -4,11 +4,10 @@ class Window : Adw.ApplicationWindow{
 	public Window(Gtk.Application app){
 		Object(application: app, hexpand: true, default_height:500, default_width:400);
 		init();
-		
 
 		// Pages
 		_viewStack.add_titled_with_icon (new Wds.Settings (), "", "Settings", "emblem-system-symbolic");
-		_viewStack.add_titled_with_icon (new Wds.Settings (), "", "Info", "emblem-system-symbolic");
+		_viewStack.add_titled_with_icon (new Wds.Script(), "", "Script", "emblem-system-symbolic");
 		_viewStack.add_titled_with_icon (new Wds.Settings (), "", "Tools", "emblem-system-symbolic");
 		
 		//Header Bar Title (Select page)
