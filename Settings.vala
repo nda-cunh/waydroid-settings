@@ -4,58 +4,45 @@ public class Settings : Gtk.Box{
 	public Settings(){
 		Object(orientation: Gtk.Orientation.VERTICAL);
 		this.init();
-		this.append(_group);
-
-		// General Part
-		_block_winmode = Block.append_blocks(_group, "Enabled window mode");
-		_block_suspend = Block.append_blocks(_group, "Suspend the containr on inactivity");
-		_block_invert = Block.append_blocks(_group, "Invert colors");
-		
-		// Window Part
+		this.append(_general_block);
 		this.append(_window_block);
 	}
 	private void init(){
-		_group = new Adw.PreferencesGroup(){title="General", margin_top=10, margin_bottom=10, margin_start=10, margin_end=10};
 		_window_block = new WindowBlock();
+		_general_block = new GeneralBlock();
 	}
-	private Adw.PreferencesGroup	_group;
-	private Block 					_block_winmode;
-	private Block 					_block_suspend;
-	private Block 					_block_invert;
-	private WindowBlock 			_window_block;
+	private GeneralBlock	_general_block; 
+	private WindowBlock		_window_block;
 }
 
 // --------------------------- //
 //		PART GENERAL :
 // --------------------------- //
 
+class GeneralBlock : Adw.PreferencesGroup{
+	public GeneralBlock(){
+		Object(title:"General", margin_top:10, margin_bottom:10, margin_start:10, margin_end:10);
+		_block_winmode = new Block("Enabled Window mode");
+		_block_suspend = new Block("Suspend the container on inactivity");
+		_block_invert = new Block("Invert colors");
+
+		base.add(_block_winmode);
+		base.add(_block_suspend);
+		base.add(_block_invert);
+	}
+	private Block _block_winmode;
+	private Block _block_suspend;
+	private Block _block_invert;
+}
+
 class Block : Adw.ActionRow{
 	public Block(string text){
 		Object(title:text);
 		_switch = new Gtk.Switch(){valign=Gtk.Align.CENTER};
 		base.add_suffix(_switch);
-		this.event();
 	}
-	private void event(){
-		_switch.state_set.connect((stats) => {
-				if (_func != null)
-					_func(stats);
-				return false;
-		});
-	}
-	public static Block append_blocks(Adw.PreferencesGroup box, string text){
-		var tmp = new Block(text);
-		box.add(tmp);
-		return (owned)tmp;
-	}
-	public new void connect(Handler f){
-		_func = f;
-	}
-
-    public delegate void Handler (bool stat);
-	private Handler	_func;
+	
 	private Gtk.Switch	_switch;
-}
 }
 
 // --------------------------- //
@@ -89,4 +76,5 @@ class WindowBlock : Adw.PreferencesGroup{
 	private Gtk.SpinButton _height;
 	private Gtk.SpinButton _widthpadd;
 	private Gtk.SpinButton _heightpadd;
+}
 }
