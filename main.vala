@@ -31,10 +31,6 @@ headerbar label{
 	font-size=12px;
 }
 
-.title{
-	margin-top:5px;
-	margin-left:15px;
-}
 .adwclamp{
 	#background-color:white;
 	margin:10px;

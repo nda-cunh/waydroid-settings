@@ -26,7 +26,7 @@ public class Settings : Gtk.Box{
 		});
 		
 		// Window Part
-		this.append(text_win);
+		// this.append(text_win);
 		this.append(_window_block);
 
 	}
@@ -90,39 +90,31 @@ class Block : Gtk.Box{
 //		PART WINDOW :
 // --------------------------- //
 
-class WindowBlock : Gtk.Box{
+class WindowBlock : Adw.PreferencesGroup{
 	public WindowBlock(){
-		Object(orientation : Gtk.Orientation.VERTICAL, hexpand: true, margin_bottom:5);
-		base.add_css_class("adwclamp");
-		_width = new SwitchRow("Width: ");
-		_height = new SwitchRow("Height: ");
-		_widthpadd = new SwitchRow("Width Padding: ");
-		_heightpadd = new SwitchRow("Height Padding: ");
-		base.append(_width);
-		base.append(_height);
-		base.append(_widthpadd);
-		base.append(_heightpadd);
+		Object(title:"Window", margin_top:10, margin_bottom:10, margin_start:10, margin_end:10);
+		_width = new Gtk.SpinButton.with_range(10, 4000, 10);
+		_height = new Gtk.SpinButton.with_range(10, 4000, 10);
+		_widthpadd = new Gtk.SpinButton.with_range(10, 4000, 10);
+		_heightpadd = new Gtk.SpinButton.with_range(10, 4000, 10);
+		
+		var row1 = new Adw.ActionRow(){title="Width:"};
+		row1.add_suffix(_width);
+		var row2 = new Adw.ActionRow(){title="Height:"};
+		row2.add_suffix(_height);
+		var row3 = new Adw.ActionRow(){title="Height Padding:"};
+		row3.add_suffix(_widthpadd);
+		var row4 = new Adw.ActionRow(){title="Width Padding:"};
+		row4.add_suffix(_heightpadd);
+		
+		base.add(row1);
+		base.add(row2);
+		base.add(row3);
+		base.add(row4);
 	}
 
-	private SwitchRow _width;
-	private SwitchRow _height;
-	private SwitchRow _widthpadd;
-	private SwitchRow _heightpadd;
-}
-
-class SwitchRow : Gtk.Box{
-	public SwitchRow(string text){
-		Object(orientation : Gtk.Orientation.HORIZONTAL, hexpand: true);
-		_label = new Gtk.Label(text){
-			margin_start=5
-		};
-		_spin = new Gtk.SpinButton.with_range(10, 4000, 10){
-			hexpand=true, halign=Gtk.Align.END, margin_end = 8, margin_top = 3, margin_bottom = 3
-		};
-
-		base.append(_label);
-		base.append(_spin);
-	}
-	private Gtk.Label _label;
-	private Gtk.SpinButton _spin;
+	private Gtk.SpinButton _width;
+	private Gtk.SpinButton _height;
+	private Gtk.SpinButton _widthpadd;
+	private Gtk.SpinButton _heightpadd;
 }
