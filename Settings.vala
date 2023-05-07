@@ -27,12 +27,14 @@ public class Settings : Gtk.Box{
 		
 		// Window Part
 		this.append(text_win);
+		this.append(_window_block);
 
 	}
 	private void init(){
 		text_gen = new Gtk.Label("<big><b>General</b></big>"){halign=Gtk.Align.START, css_classes={"title"}, use_markup=true};
 		text_win = new Gtk.Label("<big><b>Window</b></big>"){halign=Gtk.Align.START, css_classes={"title"}, use_markup=true};
 		_box_general = new Gtk.Box(Gtk.Orientation.VERTICAL, 0);
+		_window_block = new WindowBlock();
 		_box_general.add_css_class("adwclamp");
 	}
 	private Gtk.Label		text_gen;
@@ -41,8 +43,12 @@ public class Settings : Gtk.Box{
 	private Block 			_block_winmode;
 	private Block 			_block_suspend;
 	private Block 			_block_invert;
+	private WindowBlock 	_window_block;
 }
 
+// --------------------------- //
+//		PART GENERAL :
+// --------------------------- //
 
 class Block : Gtk.Box{
 	public Block(string text){
@@ -78,7 +84,45 @@ class Block : Gtk.Box{
 	private Gtk.Label	_label;
 	private Gtk.Switch	_switch;
 }
+}
 
+// --------------------------- //
+//		PART WINDOW :
+// --------------------------- //
 
+class WindowBlock : Gtk.Box{
+	public WindowBlock(){
+		Object(orientation : Gtk.Orientation.VERTICAL, hexpand: true, margin_bottom:5);
+		base.add_css_class("adwclamp");
+		_width = new SwitchRow("Width: ");
+		_height = new SwitchRow("Height: ");
+		_widthpadd = new SwitchRow("Width Padding: ");
+		_heightpadd = new SwitchRow("Height Padding: ");
+		base.append(_width);
+		base.append(_height);
+		base.append(_widthpadd);
+		base.append(_heightpadd);
+	}
 
+	private SwitchRow _width;
+	private SwitchRow _height;
+	private SwitchRow _widthpadd;
+	private SwitchRow _heightpadd;
+}
+
+class SwitchRow : Gtk.Box{
+	public SwitchRow(string text){
+		Object(orientation : Gtk.Orientation.HORIZONTAL, hexpand: true);
+		_label = new Gtk.Label(text){
+			margin_start=5
+		};
+		_spin = new Gtk.SpinButton.with_range(10, 4000, 10){
+			hexpand=true, halign=Gtk.Align.END, margin_end = 8, margin_top = 3, margin_bottom = 3
+		};
+
+		base.append(_label);
+		base.append(_spin);
+	}
+	private Gtk.Label _label;
+	private Gtk.SpinButton _spin;
 }

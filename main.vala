@@ -40,6 +40,8 @@ headerbar label{
 	margin:10px;
   box-shadow: 0 0 5px 1px rgba(0, 0, 0, 0.1);
 	border-radius:15px;
-
+.adwclamp spinbutton{
+	border-radius:10px;
+}
 }
 """;
