@@ -1,37 +1,109 @@
+public struct InfoScript{
+	InfoScript(string title, string subtitle, string path){
+		this.title = title;
+		this.subtitle = subtitle;
+		this.path = path;
+	}
+	string title;
+	string subtitle;
+	string path;
+}
+
 namespace Wds{
 
-	public class Script: Gtk.Box{
+public class Script: Gtk.Box{
 	public Script(){
 		Object(orientation: Gtk.Orientation.VERTICAL);
 		this.init();
+		this.event();
+		this.add_row();
+
+		// Append group of row and terminal
+		this.append(_group);
 		this.append(new Terminal());
 	}
 	private void init(){
-		// _window_block = new WindowBlock();
-		// _general_block = new GeneralBlock();
+		_group = new Adw.PreferencesGroup(){title="Script", margin_top=10, margin_bottom=10, margin_start=10, margin_end=10};
+		_terminal = new Terminal();
 	}
-	// private GeneralBlock	_general_block; 
-	// private WindowBlock		_window_block;
+
+	protected void add_row(){
+		foreach(var i in makelist()){
+			var tmp = new RowScript(i.path){title=i.title, subtitle=i.subtitle};
+			var tmp_b = new Gtk.Button.from_icon_name("terminal-symbolic"){has_frame=false, valign=Gtk.Align.CENTER};
+
+			tmp_b.clicked.connect(()=>{onClick(i);});
+			tmp.add_suffix(tmp_b);
+			_group.add(tmp);
+		}
+	}
+
+	protected void event(){
+		onClick.connect((i)=>{
+			print("%s is clicked\n", i.title);
+			_terminal.call(i);
+		});
+	}
+
+	private InfoScript []makelist(){
+		InfoScript []list = {};
+		list += InfoScript("coucou.sh", "", "/nfs/homes/nda-cunh/Desktop/waydroid-settings/script/coucou.sh");
+		list += InfoScript("hello.sh", "", "script/hello.sh");
+		list += InfoScript("Teste abc", "abc Teste", "/bin/bash");
+
+		return list;
+	}
+
+	private signal void onClick(InfoScript script);
+
+	private Adw.PreferencesGroup	_group;
+	private Terminal				_terminal;
+}
+
+public class RowScript : Adw.ActionRow{
+	public RowScript(string script_name){
+		_script_name = script_name;
+	}
+	private string _script_name;
 }
 
 
-public class Terminal : Gtk.Box{
+// --------------------------- //
+//		PART TERMINAL:
+// --------------------------- //
+
+public class Terminal : Adw.PreferencesGroup{
 	public Terminal(){
-		Object(orientation: Gtk.Orientation.VERTICAL);
+		Object(title:"Terminal", margin_top:10, margin_bottom:10, margin_start:10, margin_end:10);
 		this.init();
-		this.append(new Gtk.Label("Terminal:"));
-		this.append(_text);
-		run_ls();
+		base.add(_terminal);
 	}
-	public void run_ls(){
-		_buffer.set_text("LS".data);	
+	public void call(InfoScript info){
+		print("%s", info.title);
+		spawn({info.path});
 	}
 	private void init(){
-		_buffer = new Gtk.EntryBuffer(null);
-		_text = new Gtk.Text.with_buffer(_buffer);
+		_terminal = new Vte.Terminal(){
+			input_enabled=true, vexpand=true
+		};
+		_terminal.add_css_class("terminal");
+
+		spawn({"bash"});
 	}
-	private Gtk.EntryBuffer	_buffer;
-	private Gtk.Text		_text;
+	private void spawn(string []argv){
+		try{
+			_terminal.spawn_sync(
+					Vte.PtyFlags.DEFAULT, 
+					null, 
+					argv, 
+					null, 
+					SpawnFlags.DO_NOT_REAP_CHILD, null, out pid, null);
+		}catch(Error e){
+			printerr("%s", e.message);
+		}
+	}
+	private Vte.Terminal	_terminal;
+	private GLib.Pid		pid;
 }
 
 }

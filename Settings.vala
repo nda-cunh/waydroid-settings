@@ -22,7 +22,7 @@ public class Settings : Gtk.Box{
 class GeneralBlock : Adw.PreferencesGroup{
 	public GeneralBlock(){
 		Object(title:"General", margin_top:10, margin_bottom:10, margin_start:10, margin_end:10);
-		_block_winmode = new Block("Enabled Window mode");
+		_block_winmode = new Block("Enabled Window mode"){subtitle="only work on mutter (gnome)"};
 		_block_suspend = new Block("Suspend the container on inactivity");
 		_block_invert = new Block("Invert colors");
 

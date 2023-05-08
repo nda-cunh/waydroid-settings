@@ -25,4 +25,10 @@ public class Main{
 	private Gtk.Application _app;
 }
 
-const string css_data = "";
+const string css_data = """
+.terminal{
+	background-color:red;
+	margin:10px;
+	padding:10px;
+}
+""";

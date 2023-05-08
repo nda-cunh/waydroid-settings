@@ -7,8 +7,8 @@ class Window : Adw.ApplicationWindow{
 
 		// Pages
 		_viewStack.add_titled_with_icon (new Wds.Settings (), "", "Settings", "emblem-system-symbolic");
-		_viewStack.add_titled_with_icon (new Wds.Script(), "", "Script", "emblem-system-symbolic");
-		_viewStack.add_titled_with_icon (new Wds.Settings (), "", "Tools", "emblem-system-symbolic");
+		_viewStack.add_titled_with_icon (new Wds.Script(), "", "Script", "application-x-executable-symbolic");
+		_viewStack.add_titled_with_icon (new Gtk.Label("TODO"), "", "Tools", "emblem-important-symbolic");
 		
 		//Header Bar Title (Select page)
 		var toolsViewTitle = new Adw.ViewSwitcherTitle ();
