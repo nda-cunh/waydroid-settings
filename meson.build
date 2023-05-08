@@ -12,5 +12,6 @@ executable('waydroid-settings',
            'Script.vala',
            dependencies : [
               dependency('gtk4'),
-              dependency('libadwaita-1')],
+              dependency('libadwaita-1'),
+              dependency('vte-2.91-gtk4')],
            install : true)
