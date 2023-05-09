@@ -21,6 +21,7 @@ class Window : Adw.ApplicationWindow{
 	}
 
 	private void init(){
+		_banner =			new Adw.Banner("Waydroid is not starting"){button_label="start"};
 		_scroll =			new Gtk.ScrolledWindow();
 		_headerBar =		new Adw.HeaderBar ();
 		_box =				new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
@@ -30,11 +31,19 @@ class Window : Adw.ApplicationWindow{
 		this.set_content (_box);
 		// HEADER BAR
 		_box.append (_headerBar);
+		_box.append(_banner);
+		
+		//TODO add revealed only is waydroid is not starded (call fakeshell)
+		_banner.revealed=true;
+		//TODO call .refresh at Wds.settings Wds.Script (create refresh function)
+	
+
 		_box.append(_scroll);
 		_scroll.set_child(_viewStack);
 		_box.append(_viewSwitcherBar);
 	}
 
+	private Adw.Banner			_banner;
 	private Gtk.Box				_box;
 	private Gtk.ScrolledWindow	_scroll;
 	private Adw.ViewSwitcherBar	_viewSwitcherBar;

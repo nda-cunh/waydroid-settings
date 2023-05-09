@@ -1,1 +1,1 @@
-pkexec waydroid shell
+sudo waydroid shell

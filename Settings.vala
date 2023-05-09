@@ -21,7 +21,7 @@ public class Settings : Gtk.Box{
 
 class GeneralBlock : Adw.PreferencesGroup{
 	public GeneralBlock(){
-		Object(title:"General", margin_top:10, margin_bottom:10, margin_start:10, margin_end:10);
+		Object(title:"General", margin_top:10, margin_bottom:10, margin_start:20, margin_end:20);
 		
 		_block_winmode = new Block("multi_windows"){
 			title="Multi mode window integration",
@@ -95,7 +95,7 @@ class Block : Adw.ActionRow{
 
 class WindowBlock : Adw.PreferencesGroup{
 	public WindowBlock(){
-		Object(title:"Window", margin_top:10, margin_bottom:10, margin_start:10, margin_end:10);
+		Object(title:"Window", margin_top:10, margin_bottom:10, margin_start:20, margin_end:20);
 		_timer = new Timer();
 		_width = new Gtk.SpinButton.with_range(10, 4000, 10){valign=Gtk.Align.CENTER};
 		_height = new Gtk.SpinButton.with_range(10, 4000, 10){valign=Gtk.Align.CENTER};
