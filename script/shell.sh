@@ -1,0 +1,1 @@
+pkexec waydroid shell
