@@ -18,6 +18,7 @@ public class Main{
 		return _app.run(args);
 	}
 	public static int main(string []args){
+	
 		var app = new Main();
 		return app.run(args);	
 	}
@@ -26,9 +27,9 @@ public class Main{
 }
 
 const string css_data = """
-.terminal{
-	background-color:red;
-	margin:10px;
-	padding:10px;
-}
+frame{
+	background-color:black;
+	padding:12px;
+	border-radius:20px;
+}	
 """;

@@ -20,7 +20,7 @@ public class Script: Gtk.Box{
 
 		// Append group of row and terminal
 		this.append(_group);
-		this.append(new Terminal());
+		this.append(_terminal);
 	}
 	private void init(){
 		_group = new Adw.PreferencesGroup(){title="Script", margin_top=10, margin_bottom=10, margin_start=10, margin_end=10};
@@ -76,19 +76,21 @@ public class Terminal : Adw.PreferencesGroup{
 	public Terminal(){
 		Object(title:"Terminal", margin_top:10, margin_bottom:10, margin_start:10, margin_end:10);
 		this.init();
-		base.add(_terminal);
-	}
-	public void call(InfoScript info){
-		print("%s", info.title);
-		spawn({info.path});
+		base.add(_frame);
 	}
 	private void init(){
 		_terminal = new Vte.Terminal(){
 			input_enabled=true, vexpand=true
 		};
 		_terminal.add_css_class("terminal");
-
+		_frame.add_css_class("terminal");
+		_frame = new Gtk.Frame(null);
+		_frame.set_child(_terminal);
 		spawn({"bash"});
+	}
+	public void call(InfoScript info){
+		print("%s", info.title);
+		spawn({info.path});
 	}
 	private void spawn(string []argv){
 		try{
@@ -102,6 +104,7 @@ public class Terminal : Adw.PreferencesGroup{
 			printerr("%s", e.message);
 		}
 	}
+	private Gtk.Frame		_frame;
 	private Vte.Terminal	_terminal;
 	private GLib.Pid		pid;
 }

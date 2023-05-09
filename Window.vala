@@ -2,7 +2,7 @@ namespace Wds{
 
 class Window : Adw.ApplicationWindow{
 	public Window(Gtk.Application app){
-		Object(application: app, hexpand: true, default_height:500, default_width:400);
+		Object(application: app, hexpand: true, default_height:600, default_width:400);
 		init();
 
 		// Pages
