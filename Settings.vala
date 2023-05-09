@@ -27,10 +27,10 @@ class GeneralBlock : Adw.PreferencesGroup{
 			title="Multi mode window integration",
 			subtitle="only work on mutter (gnome)"
 		};
-		_block_cursor= new Block("cursor_on_subsurface"){
-			title="Workaround for showing the cursor",
-			subtitle=""
-		};
+		// _block_cursor= new Block("cursor_on_subsurface"){
+			// title="Workaround for showing the cursor",
+			// subtitle=""
+		// };
 		_block_suspend = new Block("suspend"){
 			title="Suspend the container on inactivity",
 			subtitle="Let the Waydroid container sleep when no apps are active"
@@ -44,19 +44,19 @@ class GeneralBlock : Adw.PreferencesGroup{
 			subtitle="Allow android direct access to hotplugged devices"
 		};
 
-		onEvent();
+		// onEvent();
 		base.add(_block_winmode);
-		base.add(_block_cursor);
+		// base.add(_block_cursor);
 		base.add(_block_suspend);
 		base.add(_block_uevent);
 		base.add(_block_invert);
 	}
-	private void onEvent(){
-		_block_cursor.visible = _block_winmode.state;
-		_block_winmode.onClick.connect((b)=>{
-			_block_cursor.visible = b;
-		});
-	}
+	// private void onEvent(){
+		// _block_cursor.visible = _block_winmode.state;
+		// _block_winmode.onClick.connect((b)=>{
+			// _block_cursor.visible = b;
+		// });
+	// }
 	private Block _block_winmode;
 	private Block _block_uevent;
 	private Block _block_cursor;
@@ -70,7 +70,9 @@ class Block : Adw.ActionRow{
 		_switch = new Gtk.Switch(){valign=Gtk.Align.CENTER};
 		base.add_suffix(_switch);
 		bool activable = bool.parse(FakeShell.waydroid_get(waydroid_mode));
+		print(@"$activable   here\n\n\n");
 		_switch.active = activable;
+		_switch.state = activable;
 		this.event();
 	}
 	private void event(){
@@ -97,8 +99,9 @@ class WindowBlock : Adw.PreferencesGroup{
 		_timer = new Timer();
 		_width = new Gtk.SpinButton.with_range(10, 4000, 10){valign=Gtk.Align.CENTER};
 		_height = new Gtk.SpinButton.with_range(10, 4000, 10){valign=Gtk.Align.CENTER};
-		_widthpadd = new Gtk.SpinButton.with_range(10, 4000, 10){valign=Gtk.Align.CENTER};
-		_heightpadd = new Gtk.SpinButton.with_range(10, 4000, 10){valign=Gtk.Align.CENTER};
+		_widthpadd = new Gtk.SpinButton.with_range(0, 4000, 10){valign=Gtk.Align.CENTER};
+		_heightpadd = new Gtk.SpinButton.with_range(0, 4000, 10){valign=Gtk.Align.CENTER};
+		_continue = true;
 		
 		var row1 = new Adw.ActionRow(){title="Width"};
 		row1.add_suffix(_width);
@@ -116,21 +119,34 @@ class WindowBlock : Adw.PreferencesGroup{
 		onEvent();
 	}
 	private void onEvent(){
-		_width.value_changed.connect(()=>{
-			print("Changed value\n");
-			_timer.reset();
-			_timer.start();
-			if (_timer.elapsed() != 0.0){
+		_width.value = double.parse(FakeShell.waydroid_get("width"));
+		_height.value = double.parse(FakeShell.waydroid_get("height"));
+		_widthpadd.value = double.parse(FakeShell.waydroid_get("width_padding"));
+		_heightpadd.value = double.parse(FakeShell.waydroid_get("height_padding"));
+
+		_width.value_changed.connect(chrono);
+		_height.value_changed.connect(chrono);		
+		_heightpadd.value_changed.connect(chrono);		
+		_widthpadd.value_changed.connect(chrono);
+	}
+	private void chrono(){
+		_timer.reset(); _timer.start();
+		if (_continue)
+		{
+			_continue = false;
 			new Thread<void>("chrono", ()=>{
-					while (_timer.elapsed() < 3){
-						print(@"In thread [$(_timer.elapsed())]\n");
-					}
-					print("CALLLLL\n\n\n\n\n");
+					while (_timer.elapsed() < 1.0)
+						;
+					FakeShell.waydroid_set("width", _width.value.to_string());
+					FakeShell.waydroid_set("height", _height.value.to_string());
+					FakeShell.waydroid_set("width_padding", _widthpadd.value.to_string());
+					FakeShell.waydroid_set("height_padding", _heightpadd.value.to_string());
+					_continue = true;
 			});
-			}
-		});
+		}
 	}
 
+	private bool			_continue;
 	private Timer			_timer;
 	private Gtk.SpinButton _width;
 	private Gtk.SpinButton _height;

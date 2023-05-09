@@ -30,7 +30,7 @@ public class Script: Gtk.Box{
 	protected void add_row(){
 		foreach(var i in makelist()){
 			var tmp = new RowScript(i.path){title=i.title, subtitle=i.subtitle};
-			var tmp_b = new Gtk.Button.from_icon_name("terminal-symbolic"){has_frame=false, valign=Gtk.Align.CENTER};
+			var tmp_b = new Gtk.Button.from_icon_name("utilities-terminal-symbolic"){has_frame=false, valign=Gtk.Align.CENTER};
 
 			tmp_b.clicked.connect(()=>{onClick(i);});
 			tmp.add_suffix(tmp_b);
@@ -49,7 +49,8 @@ public class Script: Gtk.Box{
 		InfoScript []list = {};
 		list += InfoScript("coucou.sh", "", "/nfs/homes/nda-cunh/Desktop/waydroid-settings/script/coucou.sh");
 		list += InfoScript("hello.sh", "", "script/hello.sh");
-		list += InfoScript("Teste abc", "abc Teste", "/bin/bash");
+		list += InfoScript("Teste BASH", "abc Teste", "/bin/bash");
+		list += InfoScript("shell.sh", "Android Shell", "script/shell.sh");
 
 		return list;
 	}

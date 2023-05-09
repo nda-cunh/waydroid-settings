@@ -8,7 +8,7 @@ $(NAME): $(SRC)
 	ninja install -C build
 
 build:
-	meson build --prefix=$(PWD)/bin --bindir=""
+	meson build --prefix=$(PWD)/bin --bindir="" --optimization=2
 
 run: all
 	./$(NAME)

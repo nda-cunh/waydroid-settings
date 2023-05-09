@@ -3,7 +3,7 @@ namespace FakeShell{
 	void waydroid_set(string property, string option){
 		var pid = fork();
 		if (pid == 0){
-			// execvp("waydroid", {"waydroid", "prop", "set" ,"persist." + property, option)});
+			execvp("waydroid", {"waydroid", "prop", "set" ,"persist.waydroid." + property, option});
 			exit(0);
 		}
 		waitpid(pid, null, 0);
@@ -18,7 +18,7 @@ namespace FakeShell{
 		if (pid == 0){
 			close(fds[0]);
 			dup2(fds[1], 1);
-			// execvp("waydroid", {"waydroid", "prop", "get" ,"persist." + property});
+			execvp("waydroid", {"waydroid", "prop", "get" ,"persist.waydroid." + property});
 			exit(0);
 		}
 		close(fds[1]);
@@ -28,8 +28,9 @@ namespace FakeShell{
 			str.append_c(c);
 		}
 		waitpid(pid, null, 0);
-		return "true";
-		// return str.str;
+		// return "true";
+		print(@"$property est get to $(str.str)\n");
+		return str.str.strip();
 	}
 	// string system(string cmd){
 		// StringBuilder str = new StringBuilder();
