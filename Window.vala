@@ -4,9 +4,9 @@ class Window : Adw.ApplicationWindow{
 	public Window(Gtk.Application app){
 		Object(application: app, hexpand: true, default_height:600, default_width:400);
 		init();
-
+		onEvent();
 		// Pages
-		_viewStack.add_titled_with_icon (new Wds.Settings (), "", "Settings", "emblem-system-symbolic");
+		_viewStack.add_titled_with_icon (_settings, "", "Settings", "emblem-system-symbolic");
 		_viewStack.add_titled_with_icon (new Wds.Script(), "", "Script", "application-x-executable-symbolic");
 		_viewStack.add_titled_with_icon (new Gtk.Label("TODO"), "", "Tools", "emblem-important-symbolic");
 		
@@ -21,7 +21,8 @@ class Window : Adw.ApplicationWindow{
 	}
 
 	private void init(){
-		_banner =			new Adw.Banner("Waydroid is not starting"){button_label="start"};
+		_banner =			new Adw.Banner("Waydroid is not started"){button_label="start"};
+		_settings =			new Wds.Settings();
 		_scroll =			new Gtk.ScrolledWindow();
 		_headerBar =		new Adw.HeaderBar ();
 		_box =				new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
@@ -33,8 +34,11 @@ class Window : Adw.ApplicationWindow{
 		_box.append (_headerBar);
 		_box.append(_banner);
 		
-		//TODO add revealed only is waydroid is not starded (call fakeshell)
-		_banner.revealed=true;
+		var	status = FakeShell.waydroid_status();
+		if (status.session == false){
+			_banner.revealed=true;
+			// _viewStack.visible = false;
+		}
 		//TODO call .refresh at Wds.settings Wds.Script (create refresh function)
 	
 
@@ -42,6 +46,14 @@ class Window : Adw.ApplicationWindow{
 		_scroll.set_child(_viewStack);
 		_box.append(_viewSwitcherBar);
 	}
+	private void onEvent(){
+		_banner.button_clicked.connect(()=>{
+			Posix.system("waydroid session start");
+			_settings.refresh();
+			// _viewStack.visible = true;
+		});
+	}
+	private Wds.Settings		_settings;
 
 	private Adw.Banner			_banner;
 	private Gtk.Box				_box;

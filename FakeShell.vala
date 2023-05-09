@@ -11,6 +11,7 @@ public struct StatusWaydroid{
 }
 
 namespace FakeShell{
+	
 	void waydroid_set(string property, string option){
 		var pid = fork();
 		if (pid == 0){
@@ -18,8 +19,9 @@ namespace FakeShell{
 			exit(0);
 		}
 		waitpid(pid, null, 0);
-		print(@"$property est set to $option\n");
+		message(@"$property est set to $option\n");
 	}
+
 	string waydroid_get(string property){
 		StringBuilder str = new StringBuilder();
 		int fds[2];
@@ -35,12 +37,9 @@ namespace FakeShell{
 		close(fds[1]);
 		char c = '\0';
 		while (read(fds[0], &c, 1) >= 1)
-		{
 			str.append_c(c);
-		}
 		waitpid(pid, null, 0);
-		// return "true";
-		print(@"$property est get to $(str.str)\n");
+		message(@"$property est get to $(str.str)\n");
 		return str.str.strip();
 	}
 
@@ -83,7 +82,7 @@ namespace FakeShell{
 			dup2(fds_in[0], 0);
 			dup2(fds_out[1], 1);
 			execv("/bin/bash", {"bash"});
-			message("Error Fake shell");
+			warning("Error Fake shell");
 			exit(-1);
 		}
 		else{
@@ -93,7 +92,6 @@ namespace FakeShell{
 			char c = '\0';
 			while (read(fds_out[0], &c, 1) >= 1)
 			{
-				print("[%c]\n", c);
 				str.append_c(c);
 			}
 		}

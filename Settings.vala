@@ -4,15 +4,19 @@ public class Settings : Gtk.Box{
 	public Settings(){
 		Object(orientation: Gtk.Orientation.VERTICAL);
 		this.init();
-		this.append(_general_block);
-		this.append(_window_block);
+		this.append(_general);
+		this.append(_window);
+	}
+	public void refresh(){
+		_general.refresh();
+		_window.refresh();
 	}
 	private void init(){
-		_window_block = new WindowBlock();
-		_general_block = new GeneralBlock();
+		_window = new WindowBlock();
+		_general = new GeneralBlock();
 	}
-	private GeneralBlock	_general_block; 
-	private WindowBlock		_window_block;
+	private GeneralBlock	_general; 
+	private WindowBlock		_window;
 }
 
 // --------------------------- //
@@ -27,10 +31,6 @@ class GeneralBlock : Adw.PreferencesGroup{
 			title="Multi mode window integration",
 			subtitle="only work on mutter (gnome)"
 		};
-		// _block_cursor= new Block("cursor_on_subsurface"){
-			// title="Workaround for showing the cursor",
-			// subtitle=""
-		// };
 		_block_suspend = new Block("suspend"){
 			title="Suspend the container on inactivity",
 			subtitle="Let the Waydroid container sleep when no apps are active"
@@ -44,22 +44,20 @@ class GeneralBlock : Adw.PreferencesGroup{
 			subtitle="Allow android direct access to hotplugged devices"
 		};
 
-		// onEvent();
 		base.add(_block_winmode);
-		// base.add(_block_cursor);
 		base.add(_block_suspend);
 		base.add(_block_uevent);
 		base.add(_block_invert);
+		refresh();
 	}
-	// private void onEvent(){
-		// _block_cursor.visible = _block_winmode.state;
-		// _block_winmode.onClick.connect((b)=>{
-			// _block_cursor.visible = b;
-		// });
-	// }
+	public void refresh(){
+		_block_winmode.refresh();
+		_block_uevent.refresh(); 	
+		_block_suspend.refresh();
+		_block_invert.refresh();
+	}
 	private Block _block_winmode;
 	private Block _block_uevent;
-	private Block _block_cursor;
 	private Block _block_suspend;
 	private Block _block_invert;
 }
@@ -69,13 +67,14 @@ class Block : Adw.ActionRow{
 		_property = waydroid_mode;
 		_switch = new Gtk.Switch(){valign=Gtk.Align.CENTER};
 		base.add_suffix(_switch);
-		bool activable = bool.parse(FakeShell.waydroid_get(waydroid_mode));
-		print(@"$activable   here\n\n\n");
+		onEvent();
+	}
+	public void refresh(){
+		bool activable = bool.parse(FakeShell.waydroid_get(_property));
 		_switch.active = activable;
 		_switch.state = activable;
-		this.event();
 	}
-	private void event(){
+	private void onEvent(){
 		_switch.state_set.connect((b)=> {
 			FakeShell.waydroid_set(_property, b.to_string());
 			onClick(b);
@@ -116,13 +115,16 @@ class WindowBlock : Adw.PreferencesGroup{
 		base.add(row2);
 		base.add(row3);
 		base.add(row4);
+		refresh();
 		onEvent();
 	}
-	private void onEvent(){
+	public void refresh(){
 		_width.value = double.parse(FakeShell.waydroid_get("width"));
 		_height.value = double.parse(FakeShell.waydroid_get("height"));
 		_widthpadd.value = double.parse(FakeShell.waydroid_get("width_padding"));
 		_heightpadd.value = double.parse(FakeShell.waydroid_get("height_padding"));
+	}
+	private void onEvent(){
 
 		_width.value_changed.connect(chrono);
 		_height.value_changed.connect(chrono);		
