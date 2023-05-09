@@ -10,8 +10,10 @@ executable('waydroid-settings',
            'Window.vala',
            'Settings.vala',
            'Script.vala',
+           'FakeShell.vala',
            dependencies : [
               dependency('gtk4'),
               dependency('libadwaita-1'),
-              dependency('vte-2.91-gtk4')],
+              dependency('vte-2.91-gtk4'),
+              meson.get_compiler('vala').find_library('posix'),],
            install : true)
