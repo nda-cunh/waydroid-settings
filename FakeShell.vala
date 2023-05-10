@@ -1,9 +1,9 @@
 using Posix;
 public struct StatusWaydroid{
 	StatusWaydroid(bool session, bool container, bool freeze){
-	this.session = session;
-	this.container = container;
-	this.freeze = freeze;
+		this.session = session;
+		this.container = container;
+		this.freeze = freeze;
 	}
 	bool session;
 	bool container;
@@ -49,17 +49,15 @@ namespace FakeShell{
 
 		foreach (var i in output.split("\n")){
 			if ("Session:" in i){
-				if("STOPPED" in i)
-					info.session = false;
-				else
+				if("RUNNING" in i)
 					info.session = true;
 			}
 			//TODO ADD HERE OTHER STATUS
-			if ("Session:" in i){
-				if("STOPPED" in i)
-					info.session = false;
-				else
-					info.session = true;
+			if ("Container" in i){
+				if("RUNNING" in i)
+					info.container = true;
+				if("FROZZEN" in i)
+					info.freeze = true;
 			}
 		}
 		return info;
