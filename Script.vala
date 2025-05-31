@@ -1,11 +1,11 @@
-namespace Wds{
+namespace Wds {
 
 // --------------------------- //
 //		INFO SCRIPT STRUCT:
 // --------------------------- //
 
-public struct InfoScript{
-	InfoScript(string title, string subtitle, string path){
+public struct InfoScript {
+	InfoScript (string title, string subtitle, string path) {
 		this.title = title;
 		this.subtitle = subtitle;
 		this.path = path;
@@ -19,9 +19,11 @@ public struct InfoScript{
 //		Class Script:
 // --------------------------- //
 
-public class Script: Gtk.Box{
-	public Script(){
-		Object(orientation: Gtk.Orientation.VERTICAL);
+public class Script: Gtk.Box {
+	construct {
+		orientation = Gtk.Orientation.VERTICAL;
+	}
+	public Script () {
 		this.init();
 		this.event();
 		this.add_row();
@@ -103,13 +105,21 @@ public class RowScript : Adw.ActionRow{
 // --------------------------- //
 
 public class Terminal : Adw.PreferencesGroup{
-	public Terminal(){
-		Object(title:"Terminal", margin_top:10, margin_bottom:10, margin_start:10, margin_end:10);
+	construct {
+		title = "Terminal";
+		margin_top = 10;
+		margin_bottom = 10;
+		margin_start = 10;
+		margin_end = 10;
+	}
+
+	public Terminal () {
 		this.init();
 		base.add(_frame);
 	}
-	private void init(){
-		_terminal = new Vte.Terminal(){
+
+	private void init () {
+		_terminal = new Vte.Terminal () {
 			input_enabled=true, vexpand=true
 		};
 		_terminal.add_css_class("terminal");
@@ -117,21 +127,24 @@ public class Terminal : Adw.PreferencesGroup{
 		_frame = new Gtk.Frame(null);
 		_frame.set_child(_terminal);
 	}
-	public void call(InfoScript info){
+
+	public void call (InfoScript info) {
 		string file = @"script/$(info.path)";
 		int mode = (int)Posix.S_IRUSR | (int)Posix.S_IWUSR | (int)Posix.S_IXUSR;
 		FileUtils.chmod(file, mode);
 		spawn({file});
 	}
-	private void spawn(string []argv){
-		try{
-			_terminal.spawn_sync(
+
+	private void spawn (string []argv) {
+		try {
+			_terminal.spawn_sync (
 					Vte.PtyFlags.DEFAULT, 
 					null, 
 					argv, 
 					null, 
 					SpawnFlags.DO_NOT_REAP_CHILD, null, out pid, null);
-		}catch(Error e){
+		}
+		catch (Error e) {
 			printerr("%s", e.message);
 		}
 	}
